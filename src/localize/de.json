@@ -1,0 +1,18 @@
+{
+  "editor": {
+    "entities_heading": "Räume",
+    "entity": "Klima-Entität",
+    "name": "Anzeigename (optional)",
+    "window_entity": "Fenstersensor (optional)",
+    "tap_action": "Aktion der Mitteltaste",
+    "add_entity": "Raum hinzufügen",
+    "remove_entity": "Diesen Raum entfernen",
+    "no_entities": "Noch keine Räume konfiguriert. Klicke auf \"Raum hinzufügen\", um zu starten."
+  },
+  "card": {
+    "no_entities": "Keine Klima-Entitäten konfiguriert.",
+    "unavailable": "Nicht verfügbar",
+    "action_failed": "Aktion fehlgeschlagen: {error}",
+    "select_room": "Raum auswählen"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "editor": {
+    "entities_heading": "Rooms",
+    "entity": "Climate entity",
+    "name": "Display name (optional)",
+    "window_entity": "Window sensor (optional)",
+    "tap_action": "Center button action",
+    "add_entity": "Add room",
+    "remove_entity": "Remove this room",
+    "no_entities": "No rooms configured yet. Click \"Add room\" to get started."
+  },
+  "card": {
+    "no_entities": "No climate entities configured.",
+    "unavailable": "Unavailable",
+    "action_failed": "Action failed: {error}",
+    "select_room": "Select room"
+  }
+}
