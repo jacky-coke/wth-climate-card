@@ -1,2 +1,3 @@
 node_modules/
 *.log
+dist/wth-climate-card.test.js
