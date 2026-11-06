@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  body { margin: 0; padding: 24px; background: #fafafa; font-family: sans-serif; }
+  .row { display: flex; gap: 24px; align-items: flex-start; }
+  /* In real Home Assistant, the dashboard grid/section gives ha-card (and
+     therefore this custom element's host) a concrete column width. This
+     harness has no HA frontend loaded, so we must supply that width
+     ourselves to avoid a flex shrink-to-fit artifact. */
+  wth-climate-card { display: block; width: 360px; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <wth-climate-card id="card1"></wth-climate-card>
+    <wth-climate-card id="card2"></wth-climate-card>
+  </div>
+  <script type="module" src="/dist/wth-climate-card.js"></script>
+  <script>
+    function mockHass() {
+      return {
+        language: "de",
+        states: {
+          "climate.test_buero": {
+            entity_id: "climate.test_buero",
+            state: "heat",
+            attributes: {
+              friendly_name: "Büro",
+              current_temperature: 20.4,
+              temperature: 21.5,
+              min_temp: 15,
+              max_temp: 28,
+              target_temp_step: 0.5,
+              hvac_action: "heating",
+              hvac_modes: ["heat", "off"]
+            }
+          },
+          "climate.test_schlafzimmer": {
+            entity_id: "climate.test_schlafzimmer",
+            state: "heat",
+            attributes: {
+              friendly_name: "Schlafzimmer",
+              current_temperature: 18.1,
+              temperature: 17,
+              min_temp: 15,
+              max_temp: 28,
+              target_temp_step: 0.5,
+              hvac_action: "idle",
+              hvac_modes: ["heat", "off"]
+            }
+          },
+          "binary_sensor.test_fenster_buero": {
+            entity_id: "binary_sensor.test_fenster_buero",
+            state: "off",
+            attributes: { friendly_name: "Fenster Büro", device_class: "window" }
+          },
+          "binary_sensor.test_fenster_schlafzimmer": {
+            entity_id: "binary_sensor.test_fenster_schlafzimmer",
+            state: "on",
+            attributes: { friendly_name: "Fenster Schlafzimmer", device_class: "window" }
+          }
+        },
+        callService: async (domain, service, data) => {
+          window.__lastServiceCall = { domain, service, data };
+          console.log("callService", domain, service, data);
+          return true;
+        }
+      };
+    }
+
+    customElements.whenDefined("wth-climate-card").then(() => {
+      const card1 = document.getElementById("card1");
+      card1.hass = mockHass();
+      card1.setConfig({
+        type: "custom:wth-climate-card",
+        entities: [
+          { entity: "climate.test_buero", window_entity: "binary_sensor.test_fenster_buero" }
+        ]
+      });
+
+      const card2 = document.getElementById("card2");
+      card2.hass = mockHass();
+      card2.setConfig({
+        type: "custom:wth-climate-card",
+        entities: [
+          { entity: "climate.test_buero", name: "Büro", window_entity: "binary_sensor.test_fenster_buero" },
+          { entity: "climate.test_schlafzimmer", name: "Schlafzimmer", window_entity: "binary_sensor.test_fenster_schlafzimmer" }
+        ]
+      });
+      window.__ready = true;
+    });
+  </script>
+</body>
+</html>
