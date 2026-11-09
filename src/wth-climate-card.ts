@@ -327,6 +327,11 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
   static styles = css`
     :host {
       display: block;
+      /* .wth-graphic caps out at 320px + ha-card's 12px padding on each side;
+         without this the card stretches to fill its whole dashboard grid
+         column/section, leaving a large empty gap around the (centered)
+         graphic instead of actually freeing up space next to the card. */
+      max-width: 344px;
     }
     ha-card {
       padding: 12px;
