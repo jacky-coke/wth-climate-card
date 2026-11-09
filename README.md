@@ -42,6 +42,11 @@ display that looks (and behaves) like an actual thermostat on the wall.
   scene, whatever fits.
 - **+ / − buttons** step the target temperature using the entity's own
   step size and min/max limits.
+- **Configurable sizing.** Scale the display's text/icons (`font_scale`) and
+  cap the card's own width (`max_width`) via YAML — handy if the default
+  text size doesn't fit your screen, or if the card is stretching to fill a
+  wide dashboard section and you want real space next to it for other
+  cards or icons.
 
 ## Installation
 
@@ -84,7 +89,17 @@ entities:
   - entity: climate.bedroom
     name: Bedroom
 font_scale: 0.85
+max_width: 300
 ```
+
+All of the per-room options below are also configurable through the visual
+card editor — no YAML required. The row-value pickers reuse Home Assistant's
+native "state content" field: click **+ Add** to search and pick a value,
+drag chips to reorder them, or type your own free-text value.
+
+<img src="docs/editor-picker.png" width="420" alt="Adding a row value through the native state-content picker"> <img src="docs/editor-config.png" width="420" alt="Card editor showing row-value chips and the separator option">
+
+### Per-room options (inside `entities`)
 
 | Option             | Required | Description                                                                 |
 | ------------------ | -------- | ----------------------------------------------------------------------------|
@@ -95,18 +110,16 @@ font_scale: 0.85
 | `top_values`       | no       | List of entity attributes (e.g. `temperature`, `current_temperature`, `current_humidity`, `state`) or free text, shown in the large row. Default: `temperature`. |
 | `bottom_values`    | no       | Same as above, for the small row. Default: `current_temperature`.          |
 | `separator`        | no       | String joining multiple values within a row. Default: `" · "`.             |
-| `font_scale`¹      | no       | Card-wide, multiplies the display's text/icon size. Default: `1`. Must be > 0 — try `0.7`–`0.9` for smaller text. |
 
-¹ `font_scale` is a top-level card option (next to `entities`, not per room)
-and isn't exposed in the visual editor — set it via YAML or the card's
-"Show code editor" view.
+### Card-wide options (top-level, next to `entities`)
 
-All of the per-room options above are also configurable through the visual
-card editor — no YAML required. The row-value pickers reuse Home Assistant's
-native "state content" field: click **+ Add** to search and pick a value,
-drag chips to reorder them, or type your own free-text value.
+These two aren't exposed in the visual editor — set them via YAML or the
+card's "Show code editor" view.
 
-<img src="docs/editor-picker.png" width="420" alt="Adding a row value through the native state-content picker"> <img src="docs/editor-config.png" width="420" alt="Card editor showing row-value chips and the separator option">
+| Option       | Required | Description                                                                          |
+| ------------ | -------- | --------------------------------------------------------------------------------------|
+| `font_scale` | no       | Multiplies the display's text/icon size. Default: `1`. Must be > 0 — try `0.7`–`0.9` for smaller text. |
+| `max_width`  | no       | Caps the card's own width in pixels, so it doesn't stretch to fill a wide dashboard grid column/section. Default: `344` (the thermostat graphic's own 320px cap plus the card's padding). Must be > 0 — lower it if you want to place other cards/icons next to it. |
 
 ## License
 
