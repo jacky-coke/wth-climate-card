@@ -13,8 +13,8 @@ import {
   WthClimateEntityConfig,
   WthClimateRowValue,
   DEFAULT_TAP_ACTION,
-  DEFAULT_TOP_VALUE,
-  DEFAULT_BOTTOM_VALUE
+  resolveTopValues,
+  resolveBottomValues
 } from "./types";
 import { localize } from "./localize";
 import { WTH2_IMAGE } from "./assets/wth2-datauri";
@@ -64,10 +64,22 @@ function fmtRowValue(
       return fmtTemp(current, step);
     case "humidity":
       return fmtHumidity(humidity);
-    case "none":
     default:
       return "";
   }
+}
+
+function fmtRow(
+  kinds: WthClimateRowValue[],
+  target: number | undefined,
+  current: number | undefined,
+  humidity: number | undefined,
+  step: number
+): string {
+  return kinds
+    .map((kind) => fmtRowValue(kind, target, current, humidity, step))
+    .filter((v) => v !== "")
+    .join(" · ");
 }
 
 @customElement("wth-climate-card")
@@ -211,8 +223,10 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
     const hvacAction: string | undefined = attrs.hvac_action;
     const flameOn = hvacAction === "heating";
 
-    const topValue = active.top_value ?? DEFAULT_TOP_VALUE;
-    const bottomValue = active.bottom_value ?? DEFAULT_BOTTOM_VALUE;
+    const topValues = resolveTopValues(active);
+    const bottomValues = resolveBottomValues(active);
+    const topText = fmtRow(topValues, target, current, humidity, step);
+    const bottomText = fmtRow(bottomValues, target, current, humidity, step);
 
     const windowEntity = active.window_entity ? this.hass.states[active.window_entity] : undefined;
     const windowOpen = windowEntity?.state === "on";
@@ -225,15 +239,11 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
             ${unavailable
               ? html`<div class="wth-unavailable">${localize(this._lang, "card.unavailable")}</div>`
               : html`
-                  ${topValue !== "none"
-                    ? html`<div class="wth-temp-target">
-                        ${fmtRowValue(topValue, target, current, humidity, step)}
-                      </div>`
+                  ${topText !== ""
+                    ? html`<div class="wth-temp-target">${topText}</div>`
                     : ""}
-                  ${bottomValue !== "none"
-                    ? html`<div class="wth-temp-current">
-                        ${fmtRowValue(bottomValue, target, current, humidity, step)}
-                      </div>`
+                  ${bottomText !== ""
+                    ? html`<div class="wth-temp-current">${bottomText}</div>`
                     : ""}
                   ${flameOn ? html`<ha-icon class="wth-flame" icon="mdi:fire"></ha-icon>` : ""}
                   ${windowOpen

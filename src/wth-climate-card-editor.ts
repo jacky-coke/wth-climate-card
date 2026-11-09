@@ -6,8 +6,8 @@ import {
   WthClimateEntityConfig,
   WthClimateRowValue,
   ROW_VALUE_OPTIONS,
-  DEFAULT_TOP_VALUE,
-  DEFAULT_BOTTOM_VALUE
+  resolveTopValues,
+  resolveBottomValues
 } from "./types";
 import { localize } from "./localize";
 
@@ -23,6 +23,18 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
 
   private get _lang(): string | undefined {
     return this.hass?.language;
+  }
+
+  private _rowValueSelector(): { select: { multiple: true; options: { value: string; label: string }[] } } {
+    return {
+      select: {
+        multiple: true,
+        options: ROW_VALUE_OPTIONS.map((option) => ({
+          value: option,
+          label: localize(this._lang, `editor.row_value.${option}`)
+        }))
+      }
+    };
   }
 
   private _emitConfig(entities: WthClimateEntityConfig[]): void {
@@ -104,43 +116,29 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
         ></hui-action-editor>
 
         <div class="wth-row-select">
-          <ha-select
+          <ha-selector
+            .hass=${this.hass}
             .label=${localize(this._lang, "editor.top_value")}
-            .value=${entity.top_value ?? DEFAULT_TOP_VALUE}
-            naturalMenuWidth
-            fixedMenuPosition
-            @selected=${(ev: CustomEvent) =>
+            .selector=${this._rowValueSelector()}
+            .value=${resolveTopValues(entity)}
+            @value-changed=${(ev: CustomEvent) =>
               this._updateEntity(index, {
-                top_value: (ev.target as any).value as WthClimateRowValue
+                top_values: ev.detail.value as WthClimateRowValue[],
+                top_value: undefined
               })}
-            @closed=${(ev: Event) => ev.stopPropagation()}
-          >
-            ${ROW_VALUE_OPTIONS.map(
-              (option) =>
-                html`<mwc-list-item .value=${option}>
-                  ${localize(this._lang, `editor.row_value.${option}`)}
-                </mwc-list-item>`
-            )}
-          </ha-select>
+          ></ha-selector>
 
-          <ha-select
+          <ha-selector
+            .hass=${this.hass}
             .label=${localize(this._lang, "editor.bottom_value")}
-            .value=${entity.bottom_value ?? DEFAULT_BOTTOM_VALUE}
-            naturalMenuWidth
-            fixedMenuPosition
-            @selected=${(ev: CustomEvent) =>
+            .selector=${this._rowValueSelector()}
+            .value=${resolveBottomValues(entity)}
+            @value-changed=${(ev: CustomEvent) =>
               this._updateEntity(index, {
-                bottom_value: (ev.target as any).value as WthClimateRowValue
+                bottom_values: ev.detail.value as WthClimateRowValue[],
+                bottom_value: undefined
               })}
-            @closed=${(ev: Event) => ev.stopPropagation()}
-          >
-            ${ROW_VALUE_OPTIONS.map(
-              (option) =>
-                html`<mwc-list-item .value=${option}>
-                  ${localize(this._lang, `editor.row_value.${option}`)}
-                </mwc-list-item>`
-            )}
-          </ha-select>
+          ></ha-selector>
         </div>
 
         <mwc-button class="remove" @click=${() => this._removeEntity(index)}>
@@ -178,8 +176,8 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
       gap: 8px;
       flex-wrap: wrap;
     }
-    .wth-row-select ha-select {
-      flex: 1 1 160px;
+    .wth-row-select ha-selector {
+      flex: 1 1 200px;
     }
   `;
 }
