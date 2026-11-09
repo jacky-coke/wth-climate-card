@@ -24,8 +24,13 @@ display that looks (and behaves) like an actual thermostat on the wall.
 - **Works with any `climate.*` entity**, not just Homematic IP devices — the
   WTH2 look is just the default skin, the card itself is generic.
 - **Configurable display rows.** Pick what the large (top) and small
-  (bottom) row show — target temperature, current temperature, humidity, or
-  any combination of them, joined together (e.g. `18.0° · 47%`).
+  (bottom) row show using Home Assistant's native "state content" picker —
+  search and add target temperature, current temperature, humidity, state,
+  or any other attribute the entity exposes, reorder them by dragging, or
+  type your own free-text value (e.g. a literal `-`). Combine as many as you
+  like, joined together (e.g. `18.0° · 47%`).
+- **Configurable separator.** Choose how combined values are joined — middle
+  dot, dash, space, asterisk, slash, or type your own.
 - **Smart icons.** The flame and window icons only show up when they're
   actually relevant: the flame appears only while the thermostat reports
   active heating, and the window icon only appears when a window sensor (or
@@ -66,10 +71,11 @@ entities:
     name: Living Room
     window_entity: binary_sensor.living_room_window
     top_values:
-      - current
+      - current_temperature
     bottom_values:
-      - target
-      - humidity
+      - temperature
+      - current_humidity
+    separator: " - "
     tap_action:
       action: more-info
   - entity: climate.bedroom
@@ -82,8 +88,9 @@ entities:
 | `name`           | no       | Display name for the room tab. Defaults to the entity's friendly name.      |
 | `window_entity`  | no       | A `binary_sensor` (or helper) that shows the window icon when `on`.         |
 | `tap_action`     | no       | Action for the center button. Defaults to no action.                       |
-| `top_values`     | no       | List of `target`, `current`, `humidity` shown in the large row. Default: `target`.   |
-| `bottom_values`  | no       | Same as above, for the small row. Default: `current`.                      |
+| `top_values`     | no       | List of entity attributes (e.g. `temperature`, `current_temperature`, `current_humidity`, `state`) or free text, shown in the large row. Default: `temperature`. |
+| `bottom_values`  | no       | Same as above, for the small row. Default: `current_temperature`.          |
+| `separator`      | no       | String joining multiple values within a row. Default: `" · "`.             |
 
 All of this is also configurable through the visual card editor — no YAML
 required.
