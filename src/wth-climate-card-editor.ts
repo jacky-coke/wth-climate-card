@@ -30,6 +30,7 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
       multiple: true;
       mode: "dropdown";
       reorder: true;
+      custom_value: true;
       options: { value: string; label: string }[];
     };
   } {
@@ -38,6 +39,7 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
         multiple: true,
         mode: "dropdown",
         reorder: true,
+        custom_value: true,
         options: ROW_VALUE_OPTIONS.map((option) => ({
           value: option,
           label: localize(this._lang, `editor.row_value.${option}`)

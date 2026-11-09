@@ -1,6 +1,8 @@
 import type { ActionConfig, LovelaceCardConfig } from "custom-card-helpers";
 
-export type WthClimateRowValue = "target" | "current" | "humidity";
+// The string & {} trick keeps IntelliSense for the three known values while still
+// allowing arbitrary free text (e.g. a literal "-" separator chip).
+export type WthClimateRowValue = "target" | "current" | "humidity" | (string & {});
 
 export interface WthClimateEntityConfig {
   entity: string;

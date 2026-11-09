@@ -65,7 +65,8 @@ function fmtRowValue(
     case "humidity":
       return fmtHumidity(humidity);
     default:
-      return "";
+      // Free-text values (e.g. a literal "-" separator) are shown as-is.
+      return kind;
   }
 }
 
