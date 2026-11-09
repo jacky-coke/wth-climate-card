@@ -93,12 +93,14 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
             this._updateEntity(index, { entity: ev.detail.value })}
         ></ha-entity-picker>
 
-        <ha-textfield
+        <ha-selector
+          .hass=${this.hass}
           .label=${localize(this._lang, "editor.name")}
+          .selector=${{ text: {} }}
           .value=${entity.name ?? ""}
-          @input=${(ev: Event) =>
-            this._updateEntity(index, { name: (ev.target as HTMLInputElement).value })}
-        ></ha-textfield>
+          @value-changed=${(ev: CustomEvent) =>
+            this._updateEntity(index, { name: (ev.detail.value as string) || undefined })}
+        ></ha-selector>
 
         <ha-entity-picker
           .hass=${this.hass}
@@ -181,6 +183,9 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
     }
     .wth-row-select ha-selector {
       flex: 1 1 200px;
+    }
+    .wth-entity-row > ha-selector {
+      width: 100%;
     }
   `;
 }
