@@ -31,13 +31,6 @@ export interface WthClimateCardConfig extends LovelaceCardConfig {
    * editor, e.g. `font_scale: 0.75` for smaller text. Must be > 0.
    */
   font_scale?: number;
-  /**
-   * Caps the card's own width in pixels, so it doesn't stretch to fill a wide
-   * dashboard grid column/section. Not exposed in the visual editor — set it
-   * via YAML/the code editor. Must be > 0. Default: 344 (the thermostat
-   * graphic's own 320px cap plus the card's padding).
-   */
-  max_width?: number;
 }
 
 export const DEFAULT_TAP_ACTION: ActionConfig = { action: "none" };
@@ -74,14 +67,6 @@ export const DEFAULT_FONT_SCALE = 1;
 export function resolveFontScale(config: WthClimateCardConfig): number {
   const value = config.font_scale;
   return typeof value === "number" && Number.isFinite(value) && value > 0 ? value : DEFAULT_FONT_SCALE;
-}
-
-export const DEFAULT_MAX_WIDTH = 344;
-
-/** Resolves the card's own max width (px), falling back to the default for an invalid/missing value. */
-export function resolveMaxWidth(config: WthClimateCardConfig): number {
-  const value = config.max_width;
-  return typeof value === "number" && Number.isFinite(value) && value > 0 ? value : DEFAULT_MAX_WIDTH;
 }
 
 /** Resolves the effective window sensor list for a room, handling the old single-entity config. */

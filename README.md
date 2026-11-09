@@ -42,11 +42,12 @@ display that looks (and behaves) like an actual thermostat on the wall.
   scene, whatever fits.
 - **+ / − buttons** step the target temperature using the entity's own
   step size and min/max limits.
-- **Configurable sizing.** Scale the display's text/icons (`font_scale`) and
-  cap the card's own width (`max_width`) via YAML — handy if the default
-  text size doesn't fit your screen, or if the card is stretching to fill a
-  wide dashboard section and you want real space next to it for other
-  cards or icons.
+- **Configurable text size.** Scale the display's text/icons (`font_scale`)
+  via YAML — handy if the default size doesn't fit your screen.
+- **Sensible default sizing in Sections-view dashboards.** The card reports
+  a compact default column span out of the box, so it doesn't stretch to
+  fill a wide section — drag-resize it afterwards (**Edit card → Layout**)
+  if you want it bigger or smaller.
 
 ## Installation
 
@@ -89,7 +90,6 @@ entities:
   - entity: climate.bedroom
     name: Bedroom
 font_scale: 0.85
-max_width: 300
 ```
 
 All of the per-room options below are also configurable through the visual
@@ -113,13 +113,22 @@ drag chips to reorder them, or type your own free-text value.
 
 ### Card-wide options (top-level, next to `entities`)
 
-These two aren't exposed in the visual editor — set them via YAML or the
-card's "Show code editor" view.
+This one isn't exposed in the visual editor — set it via YAML or the card's
+"Show code editor" view.
 
 | Option       | Required | Description                                                                          |
 | ------------ | -------- | --------------------------------------------------------------------------------------|
 | `font_scale` | no       | Multiplies the display's text/icon size. Default: `1`. Must be > 0 — try `0.7`–`0.9` for smaller text. |
-| `max_width`  | no       | Caps the card's own width in pixels, so it doesn't stretch to fill a wide dashboard grid column/section. Default: `344` (the thermostat graphic's own 320px cap plus the card's padding). Must be > 0 — lower it if you want to place other cards/icons next to it. |
+
+### Sizing in Sections-view dashboards
+
+The card reports a default column span (6 of 12 columns) via Home
+Assistant's grid-sizing API, so it starts out reasonably sized instead of
+stretching to fill the whole section. To change it, open **Edit card →
+Layout** and either drag-resize it on the preview grid or type an exact
+column count — no YAML needed. (On Masonry-view dashboards, which don't use
+this grid system, the card instead caps its own width via CSS so it doesn't
+stretch full-width there either.)
 
 ## License
 

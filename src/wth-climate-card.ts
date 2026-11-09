@@ -17,7 +17,6 @@ import {
   resolveBottomValues,
   resolveSeparator,
   resolveFontScale,
-  resolveMaxWidth,
   resolveWindowEntities
 } from "./types";
 import { localize } from "./localize";
@@ -158,14 +157,15 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
   }
 
   // Sections-view dashboards size cards via a 12-column grid and otherwise
-  // default an unconfigured card to a full-width cell (exactly the
-  // "card stretches to fill the section" problem max_width was added for).
-  // Reporting a compact default here fixes that out of the box - no
-  // grid_options needed in the dashboard's own YAML - while still letting
-  // the user drag-resize the card afterwards if they want it bigger.
+  // default an unconfigured card to a full-width cell - this is what
+  // actually controls the card's width there (a CSS max-width on the card
+  // itself doesn't change the grid cell it's handed). Reporting a sensible
+  // default here fixes that out of the box - no grid_options needed in the
+  // dashboard's own YAML - while still letting the user drag-resize the
+  // card afterwards if they want it bigger/smaller.
   public getGridOptions(): { columns: number; rows: number | "auto"; min_columns: number; max_columns: number } {
     return {
-      columns: 4,
+      columns: 6,
       rows: "auto",
       min_columns: 3,
       max_columns: 12
@@ -174,11 +174,6 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
 
   protected updated(changed: PropertyValues): void {
     super.updated(changed);
-    // Applied directly on the host element (not via a :host CSS rule) so it
-    // can be overridden per-config via the max_width option.
-    if (this._config) {
-      this.style.maxWidth = `${resolveMaxWidth(this._config)}px`;
-    }
   }
 
   private get _lang(): string | undefined {
@@ -348,12 +343,12 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
   static styles = css`
     :host {
       display: block;
-      /* Without a cap the card stretches to fill its whole dashboard grid
-         column/section, leaving a large empty gap around the (centered)
-         graphic instead of actually freeing up space next to the card. The
-         actual value is set in updated() from the max_width config option
-         (default 344px = .wth-graphic's 320px cap + ha-card's 12px padding
-         on each side), since a static CSS rule can't be overridden per-config. */
+      /* Keeps the card from stretching full-width on dashboards that don't
+         size cards via a grid (e.g. Masonry view). 344px = .wth-graphic's
+         320px cap + ha-card's 12px padding on each side. Sections-view
+         dashboards are sized via getGridOptions() instead - a CSS max-width
+         here doesn't change the grid cell they hand the card. */
+      max-width: 344px;
     }
     ha-card {
       padding: 12px;
