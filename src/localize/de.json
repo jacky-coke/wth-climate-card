@@ -9,7 +9,15 @@
     "remove_entity": "Diesen Raum entfernen",
     "no_entities": "Noch keine Räume konfiguriert. Klicke auf \"Raum hinzufügen\", um zu starten.",
     "top_value": "Obere Zeile (groß)",
-    "bottom_value": "Untere Zeile (klein)"
+    "bottom_value": "Untere Zeile (klein)",
+    "separator": "Trennzeichen",
+    "separator_options": {
+      "middle_dot": "Mittelpunkt",
+      "dash": "Bindestrich",
+      "space": "Leerzeichen",
+      "asterisk": "Sternchen",
+      "slash": "Schrägstrich"
+    }
   },
   "card": {
     "no_entities": "Keine Klima-Entitäten konfiguriert.",

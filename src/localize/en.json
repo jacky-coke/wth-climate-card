@@ -9,7 +9,15 @@
     "remove_entity": "Remove this room",
     "no_entities": "No rooms configured yet. Click \"Add room\" to get started.",
     "top_value": "Top row (large)",
-    "bottom_value": "Bottom row (small)"
+    "bottom_value": "Bottom row (small)",
+    "separator": "Separator",
+    "separator_options": {
+      "middle_dot": "Middle dot",
+      "dash": "Dash",
+      "space": "Space",
+      "asterisk": "Asterisk",
+      "slash": "Slash"
+    }
   },
   "card": {
     "no_entities": "No climate entities configured.",

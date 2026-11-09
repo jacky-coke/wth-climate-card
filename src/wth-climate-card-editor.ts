@@ -5,8 +5,10 @@ import {
   WthClimateCardConfig,
   WthClimateEntityConfig,
   WthClimateRowValue,
+  SEPARATOR_OPTIONS,
   resolveTopValues,
-  resolveBottomValues
+  resolveBottomValues,
+  resolveSeparator
 } from "./types";
 import { localize } from "./localize";
 
@@ -29,6 +31,34 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
   // chips, options sourced live from the room's own climate entity's attributes.
   private _rowValueSelector(entityId: string): { ui_state_content: { entity_id: string } } {
     return { ui_state_content: { entity_id: entityId } };
+  }
+
+  private static readonly SEPARATOR_LABEL_KEYS: Record<string, string> = {
+    " · ": "middle_dot",
+    " - ": "dash",
+    " ": "space",
+    " * ": "asterisk",
+    " / ": "slash"
+  };
+
+  private _separatorSelector(): {
+    select: { custom_value: true; options: { value: string; label: string }[] };
+  } {
+    return {
+      select: {
+        custom_value: true,
+        options: SEPARATOR_OPTIONS.map((value) => {
+          const key = WthClimateCardEditor.SEPARATOR_LABEL_KEYS[value];
+          const symbol = value === " " ? "␣" : value.trim();
+          return {
+            value,
+            label: key
+              ? `${localize(this._lang, `editor.separator_options.${key}`)} (${symbol})`
+              : value
+          };
+        })
+      }
+    };
   }
 
   // ui_state_content's value-changed fires undefined (0 items), a bare string (1
@@ -143,6 +173,15 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
               })}
           ></ha-selector>
         </div>
+
+        <ha-selector
+          .hass=${this.hass}
+          .label=${localize(this._lang, "editor.separator")}
+          .selector=${this._separatorSelector()}
+          .value=${resolveSeparator(entity)}
+          @value-changed=${(ev: CustomEvent) =>
+            this._updateEntity(index, { separator: (ev.detail.value as string) || undefined })}
+        ></ha-selector>
 
         <mwc-button class="remove" @click=${() => this._removeEntity(index)}>
           ${localize(this._lang, "editor.remove_entity")}

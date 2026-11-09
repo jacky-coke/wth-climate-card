@@ -14,7 +14,8 @@ import {
   WthClimateRowValue,
   DEFAULT_TAP_ACTION,
   resolveTopValues,
-  resolveBottomValues
+  resolveBottomValues,
+  resolveSeparator
 } from "./types";
 import { localize } from "./localize";
 import { WTH2_IMAGE } from "./assets/wth2-datauri";
@@ -102,12 +103,13 @@ function fmtRow(
   target: number | undefined,
   current: number | undefined,
   humidity: number | undefined,
-  step: number
+  step: number,
+  separator: string
 ): string {
   return kinds
     .map((kind) => fmtRowValue(kind, stateObj, target, current, humidity, step))
     .filter((v) => v !== "")
-    .join(" · ");
+    .join(separator);
 }
 
 @customElement("wth-climate-card")
@@ -253,8 +255,9 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
 
     const topValues = resolveTopValues(active);
     const bottomValues = resolveBottomValues(active);
-    const topText = fmtRow(topValues, stateObj, target, current, humidity, step);
-    const bottomText = fmtRow(bottomValues, stateObj, target, current, humidity, step);
+    const separator = resolveSeparator(active);
+    const topText = fmtRow(topValues, stateObj, target, current, humidity, step, separator);
+    const bottomText = fmtRow(bottomValues, stateObj, target, current, humidity, step, separator);
 
     const windowEntity = active.window_entity ? this.hass.states[active.window_entity] : undefined;
     const windowOpen = windowEntity?.state === "on";

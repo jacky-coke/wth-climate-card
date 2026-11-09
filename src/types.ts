@@ -15,6 +15,8 @@ export interface WthClimateEntityConfig {
   bottom_value?: WthClimateRowValue;
   top_values?: WthClimateRowValue[];
   bottom_values?: WthClimateRowValue[];
+  /** Joins multiple values within a row. Defaults to DEFAULT_SEPARATOR. */
+  separator?: string;
 }
 
 export interface WthClimateCardConfig extends LovelaceCardConfig {
@@ -28,6 +30,9 @@ export const DEFAULT_TAP_ACTION: ActionConfig = { action: "none" };
 export const DEFAULT_TOP_VALUES: WthClimateRowValue[] = ["temperature"];
 export const DEFAULT_BOTTOM_VALUES: WthClimateRowValue[] = ["current_temperature"];
 
+export const DEFAULT_SEPARATOR = " · ";
+export const SEPARATOR_OPTIONS: string[] = [" · ", " - ", " ", " * ", " / "];
+
 /** Resolves the effective top-row values for a room, handling old single-value configs. */
 export function resolveTopValues(entity: WthClimateEntityConfig): WthClimateRowValue[] {
   if (entity.top_values) return entity.top_values;
@@ -40,4 +45,9 @@ export function resolveBottomValues(entity: WthClimateEntityConfig): WthClimateR
   if (entity.bottom_values) return entity.bottom_values;
   if (entity.bottom_value) return [entity.bottom_value];
   return DEFAULT_BOTTOM_VALUES;
+}
+
+/** Resolves the effective separator for a room, falling back to the default. */
+export function resolveSeparator(entity: WthClimateEntityConfig): string {
+  return entity.separator ?? DEFAULT_SEPARATOR;
 }
