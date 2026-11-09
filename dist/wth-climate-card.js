@@ -268,6 +268,7 @@ var Ct=Object.defineProperty;var Pe=Object.getOwnPropertyDescriptor;var d=(n,t)=
     .wth-body {
       display: flex;
       align-items: stretch;
+      justify-content: center;
       gap: 10px;
     }
     .wth-graphic {

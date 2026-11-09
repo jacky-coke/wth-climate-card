@@ -359,6 +359,7 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
     .wth-body {
       display: flex;
       align-items: stretch;
+      justify-content: center;
       gap: 10px;
     }
     .wth-graphic {
