@@ -123,9 +123,10 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
         ${this._config.entities.length === 0
           ? html`<p class="hint">${localize(this._lang, "editor.no_entities")}</p>`
           : this._config.entities.map((entity, index) => this._renderEntityRow(entity, index))}
-        <mwc-button outlined @click=${this._addEntity}>
+        <button class="wth-add-chip" @click=${this._addEntity}>
+          <ha-icon icon="mdi:plus"></ha-icon>
           ${localize(this._lang, "editor.add_entity")}
-        </mwc-button>
+        </button>
       </div>
     `;
   }
@@ -223,9 +224,10 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
             this._updateEntity(index, { separator: (ev.detail.value as string) || undefined })}
         ></ha-selector>
 
-        <mwc-button class="remove" @click=${() => this._removeEntity(index)}>
+        <button class="wth-remove-chip" @click=${() => this._removeEntity(index)}>
+          <ha-icon icon="mdi:delete-outline"></ha-icon>
           ${localize(this._lang, "editor.remove_entity")}
-        </mwc-button>
+        </button>
       </div>
     `;
   }
@@ -248,10 +250,6 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
       margin-bottom: 8px;
       border: 1px solid var(--divider-color);
       border-radius: 8px;
-    }
-    .remove {
-      align-self: flex-end;
-      --mdc-theme-primary: var(--error-color);
     }
     .wth-row-select {
       display: flex;
@@ -308,6 +306,26 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
       background: rgba(var(--rgb-primary-text-color, 0, 0, 0), 0.06);
     }
     .wth-add-chip ha-icon {
+      --mdc-icon-size: 18px;
+    }
+    .wth-remove-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      align-self: flex-end;
+      border: 1px solid var(--error-color);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--error-color);
+      font: inherit;
+      font-size: 0.9em;
+      padding: 6px 14px 6px 10px;
+      cursor: pointer;
+    }
+    .wth-remove-chip:hover {
+      background: rgba(var(--rgb-error-color, 219, 68, 55), 0.08);
+    }
+    .wth-remove-chip ha-icon {
       --mdc-icon-size: 18px;
     }
   `;
