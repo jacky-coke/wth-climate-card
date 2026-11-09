@@ -296,9 +296,9 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
     }
     .wth-temp-target {
       position: absolute;
-      top: 17%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      top: 23%;
+      left: 15%;
+      transform: translateY(-50%);
       font-size: clamp(1.4em, 7cqw, 2.4em);
       font-weight: 600;
       color: #222;
@@ -306,9 +306,9 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
     }
     .wth-temp-current {
       position: absolute;
-      top: 32%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      top: 38%;
+      left: 15%;
+      transform: translateY(-50%);
       font-size: clamp(0.8em, 3.4cqw, 1.1em);
       color: #555;
       pointer-events: none;
@@ -322,7 +322,7 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
       -webkit-tap-highlight-color: transparent;
     }
     .wth-center {
-      top: 44%;
+      top: 54%;
       left: 50%;
       width: 15%;
       height: 15%;
