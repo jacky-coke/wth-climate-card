@@ -17,6 +17,7 @@ import {
   resolveBottomValues,
   resolveSeparator,
   resolveFontScale,
+  resolveMaxWidth,
   resolveWindowEntities
 } from "./types";
 import { localize } from "./localize";
@@ -158,6 +159,11 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
 
   protected updated(changed: PropertyValues): void {
     super.updated(changed);
+    // Applied directly on the host element (not via a :host CSS rule) so it
+    // can be overridden per-config via the max_width option.
+    if (this._config) {
+      this.style.maxWidth = `${resolveMaxWidth(this._config)}px`;
+    }
   }
 
   private get _lang(): string | undefined {
@@ -327,11 +333,12 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
   static styles = css`
     :host {
       display: block;
-      /* .wth-graphic caps out at 320px + ha-card's 12px padding on each side;
-         without this the card stretches to fill its whole dashboard grid
+      /* Without a cap the card stretches to fill its whole dashboard grid
          column/section, leaving a large empty gap around the (centered)
-         graphic instead of actually freeing up space next to the card. */
-      max-width: 344px;
+         graphic instead of actually freeing up space next to the card. The
+         actual value is set in updated() from the max_width config option
+         (default 344px = .wth-graphic's 320px cap + ha-card's 12px padding
+         on each side), since a static CSS rule can't be overridden per-config. */
     }
     ha-card {
       padding: 12px;
