@@ -8,7 +8,7 @@ whole house**: a wall-thermostat-styled display you flip through room by room
 with a tab bar, modeled after the look of a real **Homematic IP WTH2**
 wall thermostat — which is exactly what's mounted on the walls here.
 
-![WTH Climate Card screenshot](docs/screenshot.jpg)
+![WTH Climate Card screenshot](docs/screenshot.png)
 
 ## Why
 
@@ -93,7 +93,11 @@ entities:
 | `separator`      | no       | String joining multiple values within a row. Default: `" · "`.             |
 
 All of this is also configurable through the visual card editor — no YAML
-required.
+required. The row-value pickers reuse Home Assistant's native "state
+content" field: click **+ Add** to search and pick a value, drag chips to
+reorder them, or type your own free-text value.
+
+<img src="docs/editor-picker.png" width="420" alt="Adding a row value through the native state-content picker"> <img src="docs/editor-config.png" width="420" alt="Card editor showing row-value chips and the separator option">
 
 ## License
 
