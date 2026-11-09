@@ -276,7 +276,7 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
     .wth-graphic {
       position: relative;
       flex: 1 1 auto;
-      aspect-ratio: 450 / 433;
+      aspect-ratio: 424 / 399;
       max-width: 320px;
       background-image: url(${unsafeCSS(WTH2_IMAGE)});
       background-size: contain;
@@ -296,8 +296,8 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
     }
     .wth-temp-target {
       position: absolute;
-      top: 23%;
-      left: 15%;
+      top: 22%;
+      left: 17%;
       transform: translateY(-50%);
       font-size: clamp(1.4em, 7cqw, 2.4em);
       font-weight: 600;
@@ -307,7 +307,7 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
     .wth-temp-current {
       position: absolute;
       top: 38%;
-      left: 15%;
+      left: 17%;
       transform: translateY(-50%);
       font-size: clamp(0.8em, 3.4cqw, 1.1em);
       color: #555;
@@ -322,31 +322,31 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
       -webkit-tap-highlight-color: transparent;
     }
     .wth-center {
-      top: 54%;
+      top: 56%;
       left: 50%;
-      width: 15%;
-      height: 15%;
+      width: 16%;
+      height: 16%;
       transform: translate(-50%, -50%);
       border-radius: 20%;
     }
     .wth-minus {
-      top: 68%;
-      left: 11%;
-      width: 24%;
-      height: 24%;
+      top: 71%;
+      left: 8.6%;
+      width: 25.5%;
+      height: 26%;
       border-radius: 50%;
     }
     .wth-plus {
-      top: 68%;
-      left: 65%;
-      width: 24%;
-      height: 24%;
+      top: 71%;
+      left: 66%;
+      width: 25.5%;
+      height: 26%;
       border-radius: 50%;
     }
     .wth-flame {
       position: absolute;
-      top: 21.2%;
-      left: 71.5%;
+      top: 20%;
+      left: 73%;
       transform: translate(-50%, -50%);
       --mdc-icon-size: clamp(16px, 7cqw, 26px);
       color: #000;
@@ -354,8 +354,8 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
     }
     .wth-window {
       position: absolute;
-      top: 37.9%;
-      left: 71.6%;
+      top: 38%;
+      left: 73%;
       transform: translate(-50%, -50%);
       --mdc-icon-size: clamp(16px, 7cqw, 26px);
       color: #000;
