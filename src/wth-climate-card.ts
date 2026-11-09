@@ -157,6 +157,21 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
     return 4;
   }
 
+  // Sections-view dashboards size cards via a 12-column grid and otherwise
+  // default an unconfigured card to a full-width cell (exactly the
+  // "card stretches to fill the section" problem max_width was added for).
+  // Reporting a compact default here fixes that out of the box - no
+  // grid_options needed in the dashboard's own YAML - while still letting
+  // the user drag-resize the card afterwards if they want it bigger.
+  public getGridOptions(): { columns: number; rows: number | "auto"; min_columns: number; max_columns: number } {
+    return {
+      columns: 4,
+      rows: "auto",
+      min_columns: 3,
+      max_columns: 12
+    };
+  }
+
   protected updated(changed: PropertyValues): void {
     super.updated(changed);
     // Applied directly on the host element (not via a :host CSS rule) so it
