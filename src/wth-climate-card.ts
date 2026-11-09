@@ -15,7 +15,9 @@ import {
   DEFAULT_TAP_ACTION,
   resolveTopValues,
   resolveBottomValues,
-  resolveSeparator
+  resolveSeparator,
+  resolveFontScale,
+  resolveWindowEntities
 } from "./types";
 import { localize } from "./localize";
 import { WTH2_IMAGE } from "./assets/wth2-datauri";
@@ -259,14 +261,15 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
     const topText = fmtRow(topValues, stateObj, target, current, humidity, step, separator);
     const bottomText = fmtRow(bottomValues, stateObj, target, current, humidity, step, separator);
 
-    const windowEntity = active.window_entity ? this.hass.states[active.window_entity] : undefined;
-    const windowOpen = windowEntity?.state === "on";
+    const windowEntityIds = resolveWindowEntities(active);
+    const windowOpen = windowEntityIds.some((id) => this.hass!.states[id]?.state === "on");
+    const fontScale = resolveFontScale(this._config);
 
     return html`
       <ha-card>
         ${entities.length > 1 ? this._renderSelector(entities, activeIndex) : ""}
         <div class="wth-body">
-          <div class="wth-graphic">
+          <div class="wth-graphic" style=${`--wth-font-scale: ${fontScale}`}>
             ${unavailable
               ? html`<div class="wth-unavailable">${localize(this._lang, "card.unavailable")}</div>`
               : html`
@@ -367,6 +370,11 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+      /* The cqw units below need an explicit query container, otherwise they
+         fall back to resolving against the viewport instead of this
+         element's own (rendered) width - which made the text size depend on
+         the browser window rather than the card's size in the dashboard. */
+      container-type: inline-size;
     }
     .wth-unavailable {
       position: absolute;
@@ -384,7 +392,7 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
       top: 22%;
       left: 17%;
       transform: translateY(-50%);
-      font-size: clamp(1.4em, 7cqw, 2.4em);
+      font-size: calc(clamp(1.4em, 7cqw, 2.4em) * var(--wth-font-scale, 1));
       font-weight: 600;
       color: #222;
       pointer-events: none;
@@ -394,7 +402,7 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
       top: 38%;
       left: 17%;
       transform: translateY(-50%);
-      font-size: clamp(0.8em, 3.4cqw, 1.1em);
+      font-size: calc(clamp(0.8em, 3.4cqw, 1.1em) * var(--wth-font-scale, 1));
       color: #555;
       pointer-events: none;
     }
@@ -433,7 +441,7 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
       top: 20%;
       left: 73%;
       transform: translate(-50%, -50%);
-      --mdc-icon-size: clamp(16px, 7cqw, 26px);
+      --mdc-icon-size: calc(clamp(16px, 7cqw, 26px) * var(--wth-font-scale, 1));
       color: #000;
       pointer-events: none;
     }
@@ -442,7 +450,7 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
       top: 38%;
       left: 73%;
       transform: translate(-50%, -50%);
-      --mdc-icon-size: clamp(16px, 7cqw, 26px);
+      --mdc-icon-size: calc(clamp(16px, 7cqw, 26px) * var(--wth-font-scale, 1));
       color: #000;
       pointer-events: none;
     }

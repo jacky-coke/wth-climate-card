@@ -33,9 +33,10 @@ display that looks (and behaves) like an actual thermostat on the wall.
   dot, dash, space, asterisk, slash, or type your own.
 - **Smart icons.** The flame and window icons only show up when they're
   actually relevant: the flame appears only while the thermostat reports
-  active heating, and the window icon only appears when a window sensor (or
-  helper) is configured *and* available — no icon clutter for rooms that
-  don't have one.
+  active heating, and the window icon only appears when at least one window
+  sensor (or helper) is configured *and* reports `on` — you can assign more
+  than one window/door sensor per room, OR-combined, and no icon clutter for
+  rooms that don't have any.
 - **Freely assignable center button.** Wire it up to anything Home
   Assistant's action editor supports: more-info, navigate, a script, a
   scene, whatever fits.
@@ -69,7 +70,9 @@ type: custom:wth-climate-card
 entities:
   - entity: climate.living_room
     name: Living Room
-    window_entity: binary_sensor.living_room_window
+    window_entities:
+      - binary_sensor.living_room_window
+      - binary_sensor.living_room_balcony_door
     top_values:
       - current_temperature
     bottom_values:
@@ -80,22 +83,28 @@ entities:
       action: more-info
   - entity: climate.bedroom
     name: Bedroom
+font_scale: 0.85
 ```
 
-| Option           | Required | Description                                                                 |
-| ---------------- | -------- | ----------------------------------------------------------------------------|
-| `entity`         | yes      | A `climate.*` entity.                                                       |
-| `name`           | no       | Display name for the room tab. Defaults to the entity's friendly name.      |
-| `window_entity`  | no       | A `binary_sensor` (or helper) that shows the window icon when `on`.         |
-| `tap_action`     | no       | Action for the center button. Defaults to no action.                       |
-| `top_values`     | no       | List of entity attributes (e.g. `temperature`, `current_temperature`, `current_humidity`, `state`) or free text, shown in the large row. Default: `temperature`. |
-| `bottom_values`  | no       | Same as above, for the small row. Default: `current_temperature`.          |
-| `separator`      | no       | String joining multiple values within a row. Default: `" · "`.             |
+| Option             | Required | Description                                                                 |
+| ------------------ | -------- | ----------------------------------------------------------------------------|
+| `entity`           | yes      | A `climate.*` entity.                                                       |
+| `name`             | no       | Display name for the room tab. Defaults to the entity's friendly name.      |
+| `window_entities`  | no       | List of `binary_sensor` entities (or helpers). The window icon shows up when **any** of them is `on`. |
+| `tap_action`       | no       | Action for the center button. Defaults to no action.                       |
+| `top_values`       | no       | List of entity attributes (e.g. `temperature`, `current_temperature`, `current_humidity`, `state`) or free text, shown in the large row. Default: `temperature`. |
+| `bottom_values`    | no       | Same as above, for the small row. Default: `current_temperature`.          |
+| `separator`        | no       | String joining multiple values within a row. Default: `" · "`.             |
+| `font_scale`¹      | no       | Card-wide, multiplies the display's text/icon size. Default: `1`. Must be > 0 — try `0.7`–`0.9` for smaller text. |
 
-All of this is also configurable through the visual card editor — no YAML
-required. The row-value pickers reuse Home Assistant's native "state
-content" field: click **+ Add** to search and pick a value, drag chips to
-reorder them, or type your own free-text value.
+¹ `font_scale` is a top-level card option (next to `entities`, not per room)
+and isn't exposed in the visual editor — set it via YAML or the card's
+"Show code editor" view.
+
+All of the per-room options above are also configurable through the visual
+card editor — no YAML required. The row-value pickers reuse Home Assistant's
+native "state content" field: click **+ Add** to search and pick a value,
+drag chips to reorder them, or type your own free-text value.
 
 <img src="docs/editor-picker.png" width="420" alt="Adding a row value through the native state-content picker"> <img src="docs/editor-config.png" width="420" alt="Card editor showing row-value chips and the separator option">
 

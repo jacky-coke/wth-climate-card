@@ -8,7 +8,8 @@ import {
   SEPARATOR_OPTIONS,
   resolveTopValues,
   resolveBottomValues,
-  resolveSeparator
+  resolveSeparator,
+  resolveWindowEntities
 } from "./types";
 import { localize } from "./localize";
 
@@ -81,6 +82,26 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
     this._emitConfig(entities);
   }
 
+  private _updateWindowEntity(index: number, winIndex: number, value: string): void {
+    if (!this._config) return;
+    const list = resolveWindowEntities(this._config.entities[index]);
+    list[winIndex] = value;
+    this._updateEntity(index, { window_entities: list, window_entity: undefined });
+  }
+
+  private _addWindowEntity(index: number): void {
+    if (!this._config) return;
+    const list = resolveWindowEntities(this._config.entities[index]);
+    this._updateEntity(index, { window_entities: [...list, ""], window_entity: undefined });
+  }
+
+  private _removeWindowEntity(index: number, winIndex: number): void {
+    if (!this._config) return;
+    const list = resolveWindowEntities(this._config.entities[index]);
+    list.splice(winIndex, 1);
+    this._updateEntity(index, { window_entities: list, window_entity: undefined });
+  }
+
   private _addEntity(): void {
     if (!this._config) return;
     this._emitConfig([...this._config.entities, { entity: "" } as WthClimateEntityConfig]);
@@ -130,14 +151,32 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
             this._updateEntity(index, { name: (ev.detail.value as string) || undefined })}
         ></ha-selector>
 
-        <ha-entity-picker
-          .hass=${this.hass}
-          .value=${entity.window_entity ?? ""}
-          .label=${localize(this._lang, "editor.window_entity")}
-          .includeDomains=${["binary_sensor"]}
-          @value-changed=${(ev: CustomEvent) =>
-            this._updateEntity(index, { window_entity: ev.detail.value || undefined })}
-        ></ha-entity-picker>
+        <div class="wth-window-entities">
+          <label class="wth-label">${localize(this._lang, "editor.window_entities")}</label>
+          ${resolveWindowEntities(entity).map(
+            (id, winIndex) => html`
+              <div class="wth-window-entity-row">
+                <ha-entity-picker
+                  .hass=${this.hass}
+                  .value=${id}
+                  .includeDomains=${["binary_sensor"]}
+                  @value-changed=${(ev: CustomEvent) =>
+                    this._updateWindowEntity(index, winIndex, ev.detail.value)}
+                ></ha-entity-picker>
+                <button
+                  class="wth-icon-remove"
+                  @click=${() => this._removeWindowEntity(index, winIndex)}
+                  aria-label=${localize(this._lang, "editor.remove_window_entity")}
+                >
+                  ✕
+                </button>
+              </div>
+            `
+          )}
+          <mwc-button outlined @click=${() => this._addWindowEntity(index)}>
+            ${localize(this._lang, "editor.add_window_entity")}
+          </mwc-button>
+        </div>
 
         <hui-action-editor
           .hass=${this.hass}
@@ -223,6 +262,32 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
     }
     .wth-entity-row > ha-selector {
       width: 100%;
+    }
+    .wth-window-entities {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .wth-label {
+      font-size: 0.75em;
+      color: var(--secondary-text-color);
+    }
+    .wth-window-entity-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .wth-window-entity-row ha-entity-picker {
+      flex: 1 1 auto;
+    }
+    .wth-icon-remove {
+      border: none;
+      background: transparent;
+      color: var(--secondary-text-color);
+      cursor: pointer;
+      font-size: 1em;
+      line-height: 1;
+      padding: 8px;
     }
   `;
 }

@@ -7,7 +7,10 @@ export type WthClimateRowValue = "target" | "current" | "humidity" | (string & {
 export interface WthClimateEntityConfig {
   entity: string;
   name?: string;
+  /** @deprecated superseded by window_entities (array); kept for reading old configs */
   window_entity?: string;
+  /** Window (or door) sensors; the icon shows whenever ANY of them is "on". */
+  window_entities?: string[];
   tap_action?: ActionConfig;
   /** @deprecated superseded by top_values (array); kept for reading old configs */
   top_value?: WthClimateRowValue;
@@ -22,6 +25,12 @@ export interface WthClimateEntityConfig {
 export interface WthClimateCardConfig extends LovelaceCardConfig {
   type: string;
   entities: WthClimateEntityConfig[];
+  /**
+   * Scales the thermostat display's text and icons relative to the built-in
+   * default (1). Not exposed in the visual editor — set it via YAML/the code
+   * editor, e.g. `font_scale: 0.75` for smaller text. Must be > 0.
+   */
+  font_scale?: number;
 }
 
 export const DEFAULT_TAP_ACTION: ActionConfig = { action: "none" };
@@ -50,4 +59,21 @@ export function resolveBottomValues(entity: WthClimateEntityConfig): WthClimateR
 /** Resolves the effective separator for a room, falling back to the default. */
 export function resolveSeparator(entity: WthClimateEntityConfig): string {
   return entity.separator ?? DEFAULT_SEPARATOR;
+}
+
+export const DEFAULT_FONT_SCALE = 1;
+
+/** Resolves the card-wide font scale, falling back to the default for an invalid/missing value. */
+export function resolveFontScale(config: WthClimateCardConfig): number {
+  const value = config.font_scale;
+  return typeof value === "number" && Number.isFinite(value) && value > 0 ? value : DEFAULT_FONT_SCALE;
+}
+
+/** Resolves the effective window sensor list for a room, handling the old single-entity config. */
+export function resolveWindowEntities(entity: WthClimateEntityConfig): string[] {
+  const list = entity.window_entities ? [...entity.window_entities] : [];
+  if (entity.window_entity && !list.includes(entity.window_entity)) {
+    list.unshift(entity.window_entity);
+  }
+  return list;
 }
