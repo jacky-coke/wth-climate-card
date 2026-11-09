@@ -16,6 +16,7 @@
   <div class="row">
     <wth-climate-card id="card1"></wth-climate-card>
     <wth-climate-card id="card2"></wth-climate-card>
+    <wth-climate-card id="card3"></wth-climate-card>
   </div>
   <script type="module" src="/dist/wth-climate-card.js"></script>
   <script>
@@ -30,6 +31,7 @@
               friendly_name: "Büro",
               current_temperature: 20.4,
               temperature: 21.5,
+              current_humidity: 47,
               min_temp: 15,
               max_temp: 28,
               target_temp_step: 0.5,
@@ -89,6 +91,21 @@
           { entity: "climate.test_schlafzimmer", name: "Schlafzimmer", window_entity: "binary_sensor.test_fenster_schlafzimmer" }
         ]
       });
+      const card3 = document.getElementById("card3");
+      card3.hass = mockHass();
+      card3.setConfig({
+        type: "custom:wth-climate-card",
+        entities: [
+          {
+            entity: "climate.test_buero",
+            name: "Büro (Soll+Feuchte)",
+            window_entity: "binary_sensor.test_fenster_buero",
+            top_value: "target",
+            bottom_value: "humidity"
+          }
+        ]
+      });
+
       window.__ready = true;
     });
   </script>

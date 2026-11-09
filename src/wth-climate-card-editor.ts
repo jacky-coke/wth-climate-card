@@ -1,7 +1,14 @@
 import { LitElement, html, css, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { HomeAssistant, LovelaceCardEditor, fireEvent } from "custom-card-helpers";
-import { WthClimateCardConfig, WthClimateEntityConfig } from "./types";
+import {
+  WthClimateCardConfig,
+  WthClimateEntityConfig,
+  WthClimateRowValue,
+  ROW_VALUE_OPTIONS,
+  DEFAULT_TOP_VALUE,
+  DEFAULT_BOTTOM_VALUE
+} from "./types";
 import { localize } from "./localize";
 
 @customElement("wth-climate-card-editor")
@@ -96,6 +103,46 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
             this._updateEntity(index, { tap_action: ev.detail.value })}
         ></hui-action-editor>
 
+        <div class="wth-row-select">
+          <ha-select
+            .label=${localize(this._lang, "editor.top_value")}
+            .value=${entity.top_value ?? DEFAULT_TOP_VALUE}
+            naturalMenuWidth
+            fixedMenuPosition
+            @selected=${(ev: CustomEvent) =>
+              this._updateEntity(index, {
+                top_value: (ev.target as any).value as WthClimateRowValue
+              })}
+            @closed=${(ev: Event) => ev.stopPropagation()}
+          >
+            ${ROW_VALUE_OPTIONS.map(
+              (option) =>
+                html`<mwc-list-item .value=${option}>
+                  ${localize(this._lang, `editor.row_value.${option}`)}
+                </mwc-list-item>`
+            )}
+          </ha-select>
+
+          <ha-select
+            .label=${localize(this._lang, "editor.bottom_value")}
+            .value=${entity.bottom_value ?? DEFAULT_BOTTOM_VALUE}
+            naturalMenuWidth
+            fixedMenuPosition
+            @selected=${(ev: CustomEvent) =>
+              this._updateEntity(index, {
+                bottom_value: (ev.target as any).value as WthClimateRowValue
+              })}
+            @closed=${(ev: Event) => ev.stopPropagation()}
+          >
+            ${ROW_VALUE_OPTIONS.map(
+              (option) =>
+                html`<mwc-list-item .value=${option}>
+                  ${localize(this._lang, `editor.row_value.${option}`)}
+                </mwc-list-item>`
+            )}
+          </ha-select>
+        </div>
+
         <mwc-button class="remove" @click=${() => this._removeEntity(index)}>
           ${localize(this._lang, "editor.remove_entity")}
         </mwc-button>
@@ -125,6 +172,14 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
     .remove {
       align-self: flex-end;
       --mdc-theme-primary: var(--error-color);
+    }
+    .wth-row-select {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .wth-row-select ha-select {
+      flex: 1 1 160px;
     }
   `;
 }

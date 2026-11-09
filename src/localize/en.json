@@ -7,7 +7,15 @@
     "tap_action": "Center button action",
     "add_entity": "Add room",
     "remove_entity": "Remove this room",
-    "no_entities": "No rooms configured yet. Click \"Add room\" to get started."
+    "no_entities": "No rooms configured yet. Click \"Add room\" to get started.",
+    "top_value": "Top row (large)",
+    "bottom_value": "Bottom row (small)",
+    "row_value": {
+      "target": "Target temperature",
+      "current": "Current temperature",
+      "humidity": "Humidity",
+      "none": "Hidden"
+    }
   },
   "card": {
     "no_entities": "No climate entities configured.",

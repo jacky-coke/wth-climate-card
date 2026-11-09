@@ -8,7 +8,14 @@ import {
   hasAction,
   fireEvent
 } from "custom-card-helpers";
-import { WthClimateCardConfig, WthClimateEntityConfig, DEFAULT_TAP_ACTION } from "./types";
+import {
+  WthClimateCardConfig,
+  WthClimateEntityConfig,
+  WthClimateRowValue,
+  DEFAULT_TAP_ACTION,
+  DEFAULT_TOP_VALUE,
+  DEFAULT_BOTTOM_VALUE
+} from "./types";
 import { localize } from "./localize";
 import { WTH2_IMAGE } from "./assets/wth2-datauri";
 
@@ -36,6 +43,31 @@ function fmtTemp(value: number | null | undefined, step: number): string {
   if (value === null || value === undefined || Number.isNaN(value)) return "–";
   const decimals = step < 1 ? 1 : 0;
   return `${value.toFixed(decimals)}°`;
+}
+
+function fmtHumidity(value: number | null | undefined): string {
+  if (value === null || value === undefined || Number.isNaN(value)) return "–";
+  return `${Math.round(value)}%`;
+}
+
+function fmtRowValue(
+  kind: WthClimateRowValue,
+  target: number | undefined,
+  current: number | undefined,
+  humidity: number | undefined,
+  step: number
+): string {
+  switch (kind) {
+    case "target":
+      return fmtTemp(target, step);
+    case "current":
+      return fmtTemp(current, step);
+    case "humidity":
+      return fmtHumidity(humidity);
+    case "none":
+    default:
+      return "";
+  }
 }
 
 @customElement("wth-climate-card")
@@ -175,8 +207,12 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
     const step: number = typeof attrs.target_temp_step === "number" ? attrs.target_temp_step : 0.5;
     const target: number | undefined = attrs.temperature;
     const current: number | undefined = attrs.current_temperature;
+    const humidity: number | undefined = attrs.current_humidity;
     const hvacAction: string | undefined = attrs.hvac_action;
     const flameOn = hvacAction === "heating";
+
+    const topValue = active.top_value ?? DEFAULT_TOP_VALUE;
+    const bottomValue = active.bottom_value ?? DEFAULT_BOTTOM_VALUE;
 
     const windowEntity = active.window_entity ? this.hass.states[active.window_entity] : undefined;
     const windowOpen = windowEntity?.state === "on";
@@ -189,8 +225,16 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
             ${unavailable
               ? html`<div class="wth-unavailable">${localize(this._lang, "card.unavailable")}</div>`
               : html`
-                  <div class="wth-temp-target">${fmtTemp(target, step)}</div>
-                  <div class="wth-temp-current">${fmtTemp(current, step)}</div>
+                  ${topValue !== "none"
+                    ? html`<div class="wth-temp-target">
+                        ${fmtRowValue(topValue, target, current, humidity, step)}
+                      </div>`
+                    : ""}
+                  ${bottomValue !== "none"
+                    ? html`<div class="wth-temp-current">
+                        ${fmtRowValue(bottomValue, target, current, humidity, step)}
+                      </div>`
+                    : ""}
                   ${flameOn ? html`<ha-icon class="wth-flame" icon="mdi:fire"></ha-icon>` : ""}
                   ${windowOpen
                     ? html`<ha-icon class="wth-window" icon="mdi:window-open-variant"></ha-icon>`
