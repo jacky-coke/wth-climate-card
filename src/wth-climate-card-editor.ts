@@ -5,7 +5,6 @@ import {
   WthClimateCardConfig,
   WthClimateEntityConfig,
   WthClimateRowValue,
-  ROW_VALUE_OPTIONS,
   resolveTopValues,
   resolveBottomValues
 } from "./types";
@@ -25,27 +24,18 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
     return this.hass?.language;
   }
 
-  private _rowValueSelector(): {
-    select: {
-      multiple: true;
-      mode: "dropdown";
-      reorder: true;
-      custom_value: true;
-      options: { value: string; label: string }[];
-    };
-  } {
-    return {
-      select: {
-        multiple: true,
-        mode: "dropdown",
-        reorder: true,
-        custom_value: true,
-        options: ROW_VALUE_OPTIONS.map((option) => ({
-          value: option,
-          label: localize(this._lang, `editor.row_value.${option}`)
-        }))
-      }
-    };
+  // Reuses HA's own "state content" picker (the same field behind the Tile card's
+  // "Zustandsinhalt" option): add-one-at-a-time via search, removable + reorderable
+  // chips, options sourced live from the room's own climate entity's attributes.
+  private _rowValueSelector(entityId: string): { ui_state_content: { entity_id: string } } {
+    return { ui_state_content: { entity_id: entityId } };
+  }
+
+  // ui_state_content's value-changed fires undefined (0 items), a bare string (1
+  // item) or a string[] (2+ items) — normalize to the array shape we store.
+  private _asArray(value: string | string[] | undefined): WthClimateRowValue[] {
+    if (value === undefined) return [];
+    return Array.isArray(value) ? value : [value];
   }
 
   private _emitConfig(entities: WthClimateEntityConfig[]): void {
@@ -132,11 +122,11 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
           <ha-selector
             .hass=${this.hass}
             .label=${localize(this._lang, "editor.top_value")}
-            .selector=${this._rowValueSelector()}
+            .selector=${this._rowValueSelector(entity.entity)}
             .value=${resolveTopValues(entity)}
             @value-changed=${(ev: CustomEvent) =>
               this._updateEntity(index, {
-                top_values: ev.detail.value as WthClimateRowValue[],
+                top_values: this._asArray(ev.detail.value),
                 top_value: undefined
               })}
           ></ha-selector>
@@ -144,11 +134,11 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
           <ha-selector
             .hass=${this.hass}
             .label=${localize(this._lang, "editor.bottom_value")}
-            .selector=${this._rowValueSelector()}
+            .selector=${this._rowValueSelector(entity.entity)}
             .value=${resolveBottomValues(entity)}
             @value-changed=${(ev: CustomEvent) =>
               this._updateEntity(index, {
-                bottom_values: ev.detail.value as WthClimateRowValue[],
+                bottom_values: this._asArray(ev.detail.value),
                 bottom_value: undefined
               })}
           ></ha-selector>

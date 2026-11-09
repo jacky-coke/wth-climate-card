@@ -9,13 +9,7 @@
     "remove_entity": "Diesen Raum entfernen",
     "no_entities": "Noch keine Räume konfiguriert. Klicke auf \"Raum hinzufügen\", um zu starten.",
     "top_value": "Obere Zeile (groß)",
-    "bottom_value": "Untere Zeile (klein)",
-    "row_value": {
-      "target": "Soll-Temperatur",
-      "current": "Ist-Temperatur",
-      "humidity": "Luftfeuchtigkeit",
-      "none": "Ausgeblendet"
-    }
+    "bottom_value": "Untere Zeile (klein)"
   },
   "card": {
     "no_entities": "Keine Klima-Entitäten konfiguriert.",

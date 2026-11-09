@@ -23,9 +23,10 @@ export interface WthClimateCardConfig extends LovelaceCardConfig {
 }
 
 export const DEFAULT_TAP_ACTION: ActionConfig = { action: "none" };
-export const DEFAULT_TOP_VALUES: WthClimateRowValue[] = ["target"];
-export const DEFAULT_BOTTOM_VALUES: WthClimateRowValue[] = ["current"];
-export const ROW_VALUE_OPTIONS: WthClimateRowValue[] = ["target", "current", "humidity"];
+// "temperature"/"current_temperature"/"current_humidity" are the climate entity's own
+// attribute names, matching what HA's native ui_state_content picker offers.
+export const DEFAULT_TOP_VALUES: WthClimateRowValue[] = ["temperature"];
+export const DEFAULT_BOTTOM_VALUES: WthClimateRowValue[] = ["current_temperature"];
 
 /** Resolves the effective top-row values for a room, handling old single-value configs. */
 export function resolveTopValues(entity: WthClimateEntityConfig): WthClimateRowValue[] {

@@ -50,35 +50,62 @@ function fmtHumidity(value: number | null | undefined): string {
   return `${Math.round(value)}%`;
 }
 
+function fmtDateTime(value: string | undefined): string {
+  if (!value) return "–";
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? "–" : d.toLocaleString();
+}
+
 function fmtRowValue(
   kind: WthClimateRowValue,
+  stateObj: any,
   target: number | undefined,
   current: number | undefined,
   humidity: number | undefined,
   step: number
 ): string {
   switch (kind) {
+    // "temperature"/"current_temperature"/"current_humidity" are the climate
+    // entity's real attribute names, as offered by HA's native state-content
+    // picker. "target"/"current"/"humidity" are kept for configs saved by the
+    // card's earlier hand-rolled row-value picker.
+    case "temperature":
     case "target":
       return fmtTemp(target, step);
+    case "current_temperature":
     case "current":
       return fmtTemp(current, step);
+    case "current_humidity":
     case "humidity":
       return fmtHumidity(humidity);
-    default:
-      // Free-text values (e.g. a literal "-" separator) are shown as-is.
+    case "state":
+      return stateObj?.state ?? "–";
+    case "last_changed":
+      return fmtDateTime(stateObj?.last_changed);
+    case "last_updated":
+      return fmtDateTime(stateObj?.last_updated);
+    default: {
+      // Any other attribute name picked from the native picker (e.g. "hvac_action").
+      if (stateObj?.attributes && kind in stateObj.attributes) {
+        const value = stateObj.attributes[kind];
+        return value === null || value === undefined ? "–" : String(value);
+      }
+      // Not a known key or live attribute: treat as literal free text (e.g. "-").
       return kind;
+    }
   }
 }
 
 function fmtRow(
   kinds: WthClimateRowValue[],
+  stateObj: any,
   target: number | undefined,
   current: number | undefined,
   humidity: number | undefined,
   step: number
 ): string {
   return kinds
-    .map((kind) => fmtRowValue(kind, target, current, humidity, step))
+    .map((kind) => fmtRowValue(kind, stateObj, target, current, humidity, step))
     .filter((v) => v !== "")
     .join(" · ");
 }
@@ -226,8 +253,8 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
 
     const topValues = resolveTopValues(active);
     const bottomValues = resolveBottomValues(active);
-    const topText = fmtRow(topValues, target, current, humidity, step);
-    const bottomText = fmtRow(bottomValues, target, current, humidity, step);
+    const topText = fmtRow(topValues, stateObj, target, current, humidity, step);
+    const bottomText = fmtRow(bottomValues, stateObj, target, current, humidity, step);
 
     const windowEntity = active.window_entity ? this.hass.states[active.window_entity] : undefined;
     const windowOpen = windowEntity?.state === "on";
