@@ -173,9 +173,10 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
               </div>
             `
           )}
-          <mwc-button outlined @click=${() => this._addWindowEntity(index)}>
+          <button class="wth-add-chip" @click=${() => this._addWindowEntity(index)}>
+            <ha-icon icon="mdi:plus"></ha-icon>
             ${localize(this._lang, "editor.add_window_entity")}
-          </mwc-button>
+          </button>
         </div>
 
         <hui-action-editor
@@ -288,6 +289,26 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
       font-size: 1em;
       line-height: 1;
       padding: 8px;
+    }
+    .wth-add-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      align-self: flex-start;
+      border: 1px solid var(--outline-color, var(--divider-color));
+      border-radius: 999px;
+      background: transparent;
+      color: var(--primary-text-color);
+      font: inherit;
+      font-size: 0.9em;
+      padding: 6px 14px 6px 10px;
+      cursor: pointer;
+    }
+    .wth-add-chip:hover {
+      background: rgba(var(--rgb-primary-text-color, 0, 0, 0), 0.06);
+    }
+    .wth-add-chip ha-icon {
+      --mdc-icon-size: 18px;
     }
   `;
 }
