@@ -191,6 +191,10 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
               : html`
                   <div class="wth-temp-target">${fmtTemp(target, step)}</div>
                   <div class="wth-temp-current">${fmtTemp(current, step)}</div>
+                  ${flameOn ? html`<ha-icon class="wth-flame" icon="mdi:fire"></ha-icon>` : ""}
+                  ${windowOpen
+                    ? html`<ha-icon class="wth-window" icon="mdi:window-open-variant"></ha-icon>`
+                    : ""}
                   <button
                     class="wth-hotspot wth-center"
                     @click=${() => this._centerTap(active)}
@@ -207,15 +211,6 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
                     aria-label="increase temperature"
                   ></button>
                 `}
-          </div>
-          <div class="wth-side">
-            <ha-icon class="wth-flame ${flameOn ? "on" : ""}" icon="mdi:fire"></ha-icon>
-            ${active.window_entity
-              ? html`<ha-icon
-                  class="wth-window ${windowOpen ? "on" : ""}"
-                  icon=${windowOpen ? "mdi:window-open-variant" : "mdi:window-closed-variant"}
-                ></ha-icon>`
-              : ""}
           </div>
         </div>
       </ha-card>
@@ -348,25 +343,23 @@ export class WthClimateCard extends LitElement implements LovelaceCard {
       height: 24%;
       border-radius: 50%;
     }
-    .wth-side {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 18px;
-      padding: 0 6px;
+    .wth-flame {
+      position: absolute;
+      top: 21.2%;
+      left: 71.5%;
+      transform: translate(-50%, -50%);
+      --mdc-icon-size: clamp(16px, 7cqw, 26px);
+      color: #000;
+      pointer-events: none;
     }
-    .wth-flame,
     .wth-window {
-      --mdc-icon-size: 28px;
-      color: var(--disabled-text-color, #bbb);
-      transition: color 0.2s ease-in-out;
-    }
-    .wth-flame.on {
-      color: var(--state-active-color, #ff9800);
-    }
-    .wth-window.on {
-      color: var(--state-active-color, #2196f3);
+      position: absolute;
+      top: 37.9%;
+      left: 71.6%;
+      transform: translate(-50%, -50%);
+      --mdc-icon-size: clamp(16px, 7cqw, 26px);
+      color: #000;
+      pointer-events: none;
     }
   `;
 }
