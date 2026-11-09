@@ -25,10 +25,13 @@ export class WthClimateCardEditor extends LitElement implements LovelaceCardEdit
     return this.hass?.language;
   }
 
-  private _rowValueSelector(): { select: { multiple: true; options: { value: string; label: string }[] } } {
+  private _rowValueSelector(): {
+    select: { multiple: true; mode: "dropdown"; options: { value: string; label: string }[] };
+  } {
     return {
       select: {
         multiple: true,
+        mode: "dropdown",
         options: ROW_VALUE_OPTIONS.map((option) => ({
           value: option,
           label: localize(this._lang, `editor.row_value.${option}`)
